@@ -1,31 +1,70 @@
 ---
-- hosts: web
-  vars:
-    container_image: pbeniwal/calculator:v1
-    container_name: calculator8888
+- hosts: all
   become: true
+  vars:
+    container_image: pbeniwal/calculator:v2
+    container_name: mycalc8888
+    docker_users:
+      - 'ubuntu'
+
   tasks:
-    - name: ensure repository key is installed
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - lsb-release
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
-    - name: ensure docker registry is available
-      apt_repository: repo='deb https://download.docker.com/linux/ubuntu focal stable' state=present
-    - name: ensure docker and dependencies are installed
-      apt: name=docker-ce update_cache=yes
-    - name: ensure pip is installed
-      apt: name=python3-pip 
-    - service: name=docker state=restarted
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: users | adding docker users (for use without sudo)
+      user:
+        name: "{{ item }}"
+        append: yes
+        groups: docker
+      become: true
+      with_items: '{{ docker_users }}'
+
     - name: Install Docker Module for Python
       pip:
         name: docker
-    - name: Pull Docker image
-      docker_image:
+
+    - name: Pull default Docker image
+      community.docker.docker_image:
         name: "{{ container_image }}"
         source: pull
+
     - name: Create container
       docker_container:
         name: "{{ container_name }}"
         image: "{{ container_image }}"
         state: started
         published_ports: 8888:8080
+
