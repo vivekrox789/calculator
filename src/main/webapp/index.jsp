@@ -6,9 +6,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Calculator</title>
 </head>
-<body bgcolor="Aqua">
+<body bgcolor="Green">
 
-<h1 style="text_align=center">Calculator - by Prashant Beniwal for Amdocs DevOps - Jun-2023!!!</h1>
+<h1 style="text_align=center">Calculator - by Prashant Beniwal for Deloitte - Dec-2023!!!</h1>
 <form action="firstHomePage" method="get">
 <label>First number:</label>
 <input id="f1" type="text" name="n1" />
@@ -33,11 +33,6 @@
 </div>
 <input id="s1" type="submit">
 </form>
-
- <% out.println("Machine name is: " +  request.getLocalName()); %>
-<br />
-<br />
- <% out.println("IP Address is: " + request.getLocalAddr()); %>
 
 </body>
 </html>
