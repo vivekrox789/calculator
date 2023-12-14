@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: calc-cont
-        image: pbeniwal/calculator:v1
+        image: IMAGE_ID
         ports:
         - containerPort: 8080
